@@ -2,91 +2,195 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>ICT Exam System</title>
+<title>ICT Smart Exam</title>
+
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: Arial;
-  background: linear-gradient(to right, #667eea, #764ba2);
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
 }
+
+/* HEADER */
+.header {
+  padding: 15px;
+  text-align: center;
+  font-size: 26px;
+  font-weight: bold;
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
+}
+
+/* MAIN CARD */
 .container {
   max-width: 900px;
-  margin: auto;
-  background: rgba(0,0,0,0.8);
-  padding: 20px;
-  border-radius: 15px;
+  margin: 30px auto;
+  background: rgba(255,255,255,0.08);
+  padding: 25px;
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
-h1 { text-align:center; color: #ffd700; }
-.timer { text-align:right; font-size:18px; color:#ff4d4d; }
-.question { margin-bottom:15px; }
+
+/* TIMER */
+.timer {
+  text-align: right;
+  font-size: 18px;
+  color: #ff4d4d;
+}
+
+/* PROGRESS BAR */
+.progress {
+  width: 100%;
+  height: 10px;
+  background: #333;
+  border-radius: 10px;
+  margin: 15px 0;
+}
+
+.progress-bar {
+  height: 10px;
+  width: 0%;
+  background: #00ffcc;
+  border-radius: 10px;
+}
+
+/* QUESTION */
+.question {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.4);
+}
+
+/* OPTIONS */
+label {
+  display: block;
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+label:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* BUTTON */
 button {
-  background:#28a745;
-  padding:10px;
-  border:none;
-  color:white;
-  border-radius:10px;
-  cursor:pointer;
+  width: 100%;
+  padding: 12px;
+  font-size: 18px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.03);
+}
+
+/* RESULT */
+.result {
+  text-align: center;
+  font-size: 22px;
+  margin-top: 20px;
 }
 </style>
 </head>
 
 <body>
+
+<div class="header">🚀 ICT Smart Exam System</div>
+
 <div class="container">
-<h1>ICT Exam (Demo)</h1>
-<div class="timer" id="timer"></div>
+
+<div class="timer" id="timer">Time: 30:00</div>
+
+<div class="progress">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
 
 <form id="quiz"></form>
 
-<button onclick="submitQuiz()">Submit</button>
+<button onclick="submitQuiz()">Submit Exam</button>
+
+<div class="result" id="result"></div>
+
 </div>
 
 <script>
 
+// 🔥 QUESTIONS (add up to 50)
 const questions = [
-{q:"What is data?", a:["Raw facts","Processed","Output","Storage"], c:0},
-{q:"What is ICT?", a:["Tech","Information & Communication Technology","System","None"], c:1},
+{q:"What is data?", a:["Raw facts","Processed data","Output","Storage"], c:0},
+{q:"What is ICT?", a:["System","Information & Communication Technology","Tool","None"], c:1},
 {q:"CPU is?", a:["Brain","Memory","Disk","Printer"], c:0},
-{q:"ATM used for?", a:["Education","Banking","Health","Games"], c:1},
-{q:"MRI used in?", a:["Health","Transport","Edu","Farm"], c:0}
+{q:"ATM used for?", a:["Banking","Health","Education","Games"], c:0},
+{q:"MRI used in?", a:["Health","Transport","Education","Farming"], c:0}
 ];
 
 let quiz = document.getElementById("quiz");
 
+// CREATE QUESTIONS
 questions.forEach((item, index)=>{
   let div = document.createElement("div");
   div.className="question";
 
-  let html = `<p>${index+1}. ${item.q}</p>`;
+  let html = `<p><b>${index+1}. ${item.q}</b></p>`;
   item.a.forEach((opt,i)=>{
-    html += `<input type="radio" name="q${index}" value="${i}"> ${opt}<br>`;
+    html += `<label><input type="radio" name="q${index}" value="${i}"> ${opt}</label>`;
   });
 
   div.innerHTML = html;
   quiz.appendChild(div);
 });
 
-let time = 300;
+// TIMER
+let time = 1800;
 setInterval(()=>{
   let m = Math.floor(time/60);
   let s = time%60;
   document.getElementById("timer").innerHTML = `Time: ${m}:${s<10?"0":""}${s}`;
   time--;
-  if(time<=0){ submitQuiz(); }
+
+  if(time <= 0){
+    submitQuiz();
+  }
 },1000);
 
+// PROGRESS BAR
+document.addEventListener("change", ()=>{
+  let answered = document.querySelectorAll("input:checked").length;
+  let percent = (answered / questions.length) * 100;
+  document.getElementById("progressBar").style.width = percent + "%";
+});
+
+// SUBMIT
 function submitQuiz(){
   let score=0;
 
   questions.forEach((q,i)=>{
     let ans = document.querySelector(`input[name=q${i}]:checked`);
-    if(ans && parseInt(ans.value)===q.c){
+    if(ans && parseInt(ans.value) === q.c){
       score++;
     }
   });
 
-  alert("Your Score: "+score+"/"+questions.length);
+  document.getElementById("result").innerHTML =
+    `✅ Your Score: ${score} / ${questions.length}`;
 }
 
 </script>
+
 </body>
 </html>
