@@ -2,124 +2,44 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>ICT Neon Exam</title>
+<title>ICT Bootstrap Exam</title>
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
 body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background: radial-gradient(circle at top, #0f2027, #203a43, #2c5364);
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
   color: white;
 }
 
-/* HEADER */
-.header {
-  text-align: center;
-  padding: 20px;
-  font-size: 28px;
-  font-weight: bold;
-  background: linear-gradient(90deg, #ff00cc, #3333ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* CARD */
-.container {
-  max-width: 900px;
-  margin: 30px auto;
-  background: rgba(255,255,255,0.05);
-  padding: 25px;
+.card {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
   border-radius: 20px;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 0 40px rgba(0,255,255,0.2);
 }
 
-/* TIMER */
-.timer {
-  text-align: right;
-  font-size: 18px;
-  color: #ff4d4d;
-  font-weight: bold;
-}
-
-/* PROGRESS */
-.progress {
-  height: 8px;
-  background: #111;
-  border-radius: 10px;
-  margin: 15px 0;
-}
-
-.progress-bar {
-  height: 8px;
-  width: 0%;
-  background: linear-gradient(90deg, #00f2fe, #4facfe);
-  border-radius: 10px;
-  transition: 0.4s;
-}
-
-/* QUESTION */
-.question {
-  margin-bottom: 20px;
-  padding: 15px;
-  border-radius: 15px;
-  background: rgba(0,0,0,0.5);
-  box-shadow: 0 0 15px rgba(0,255,255,0.1);
-}
-
-/* OPTIONS */
 .option {
-  display: block;
-  padding: 12px;
-  margin: 8px 0;
+  padding: 10px;
   border-radius: 10px;
-  background: linear-gradient(90deg, #1f1c2c, #928dab);
+  margin: 5px 0;
   cursor: pointer;
   transition: 0.3s;
-  border: 1px solid transparent;
+  background: rgba(255,255,255,0.1);
 }
 
 .option:hover {
-  transform: scale(1.03);
-  border: 1px solid #00f2fe;
-  box-shadow: 0 0 10px #00f2fe;
-}
-
-input[type="radio"] {
-  display: none;
-}
-
-input[type="radio"]:checked + span {
-  background: linear-gradient(90deg, #00f2fe, #4facfe);
+  background: #0dcaf0;
   color: black;
-  padding: 6px 10px;
-  border-radius: 6px;
 }
 
-/* BUTTON */
-button {
-  width: 100%;
-  padding: 14px;
-  font-size: 18px;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(90deg, #ff00cc, #3333ff);
-  color: white;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px #ff00cc;
-}
-
-/* RESULT */
-.result {
-  text-align: center;
-  font-size: 24px;
-  margin-top: 20px;
+.timer {
   font-weight: bold;
+  color: #ff4d4d;
+}
+
+.progress {
+  height: 8px;
 }
 </style>
 
@@ -127,21 +47,28 @@ button:hover {
 
 <body>
 
-<div class="header">⚡ ICT Neon Smart Exam ⚡</div>
+<div class="container py-4">
 
-<div class="container">
+  <h2 class="text-center mb-4 text-info">🚀 ICT Smart Exam</h2>
 
-<div class="timer" id="timer">Time: 05:00</div>
+  <div class="card p-4 shadow-lg">
 
-<div class="progress">
-  <div class="progress-bar" id="progressBar"></div>
-</div>
+    <div class="d-flex justify-content-between mb-2">
+      <div>Answer all questions</div>
+      <div class="timer" id="timer">05:00</div>
+    </div>
 
-<form id="quiz"></form>
+    <div class="progress mb-3">
+      <div class="progress-bar bg-info" id="progressBar" style="width:0%"></div>
+    </div>
 
-<button onclick="submitQuiz()">🚀 Submit Exam</button>
+    <form id="quiz"></form>
 
-<div class="result" id="result"></div>
+    <button class="btn btn-info w-100 mt-3" onclick="submitQuiz()">Submit Exam</button>
+
+    <div class="text-center mt-3 fs-4" id="result"></div>
+
+  </div>
 
 </div>
 
@@ -157,17 +84,18 @@ const questions = [
 
 let quiz = document.getElementById("quiz");
 
+// CREATE QUESTIONS
 questions.forEach((item, index)=>{
   let div = document.createElement("div");
-  div.className="question";
+  div.className="mb-3";
 
   let html = `<p><b>${index+1}. ${item.q}</b></p>`;
 
   item.a.forEach((opt,i)=>{
     html += `
-    <label class="option">
-      <input type="radio" name="q${index}" value="${i}">
-      <span>${opt}</span>
+    <label class="option w-100">
+      <input type="radio" name="q${index}" value="${i}" class="me-2">
+      ${opt}
     </label>`;
   });
 
@@ -181,7 +109,7 @@ setInterval(()=>{
   let m = Math.floor(time/60);
   let s = time%60;
   document.getElementById("timer").innerHTML =
-    `Time: ${m}:${s<10?"0":""}${s}`;
+    `${m}:${s<10?"0":""}${s}`;
   time--;
 
   if(time <= 0){
