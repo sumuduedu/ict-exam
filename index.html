@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ICT Exam System</title>
+<style>
+body {
+  font-family: Arial;
+  background: linear-gradient(to right, #667eea, #764ba2);
+  color: white;
+}
+.container {
+  max-width: 900px;
+  margin: auto;
+  background: rgba(0,0,0,0.8);
+  padding: 20px;
+  border-radius: 15px;
+}
+h1 { text-align:center; color: #ffd700; }
+.timer { text-align:right; font-size:18px; color:#ff4d4d; }
+.question { margin-bottom:15px; }
+button {
+  background:#28a745;
+  padding:10px;
+  border:none;
+  color:white;
+  border-radius:10px;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+<h1>ICT Exam (Demo)</h1>
+<div class="timer" id="timer"></div>
+
+<form id="quiz"></form>
+
+<button onclick="submitQuiz()">Submit</button>
+</div>
+
+<script>
+
+const questions = [
+{q:"What is data?", a:["Raw facts","Processed","Output","Storage"], c:0},
+{q:"What is ICT?", a:["Tech","Information & Communication Technology","System","None"], c:1},
+{q:"CPU is?", a:["Brain","Memory","Disk","Printer"], c:0},
+{q:"ATM used for?", a:["Education","Banking","Health","Games"], c:1},
+{q:"MRI used in?", a:["Health","Transport","Edu","Farm"], c:0}
+];
+
+let quiz = document.getElementById("quiz");
+
+questions.forEach((item, index)=>{
+  let div = document.createElement("div");
+  div.className="question";
+
+  let html = `<p>${index+1}. ${item.q}</p>`;
+  item.a.forEach((opt,i)=>{
+    html += `<input type="radio" name="q${index}" value="${i}"> ${opt}<br>`;
+  });
+
+  div.innerHTML = html;
+  quiz.appendChild(div);
+});
+
+let time = 300;
+setInterval(()=>{
+  let m = Math.floor(time/60);
+  let s = time%60;
+  document.getElementById("timer").innerHTML = `Time: ${m}:${s<10?"0":""}${s}`;
+  time--;
+  if(time<=0){ submitQuiz(); }
+},1000);
+
+function submitQuiz(){
+  let score=0;
+
+  questions.forEach((q,i)=>{
+    let ans = document.querySelector(`input[name=q${i}]:checked`);
+    if(ans && parseInt(ans.value)===q.c){
+      score++;
+    }
+  });
+
+  alert("Your Score: "+score+"/"+questions.length);
+}
+
+</script>
+</body>
+</html>
